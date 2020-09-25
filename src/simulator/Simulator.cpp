@@ -164,7 +164,10 @@ void Simulator::stepImpl(const StateGetter& cancelled) {
   Q += h * dQ + (h * h) * (invM * F);
 }
 
-void Simulator::setUpConstraints() {
+void Simulator::setUpLengthConstraints() {
+  if (!params.enableLengthConstrain)
+    return;
+
   for (const auto& yarn : yarns.yarns) {
     for (size_t i = yarn.begin; i < yarn.end - 3; i++) {
       addCatmullRomLengthConstraint(i);
@@ -173,17 +176,6 @@ void Simulator::setUpConstraints() {
     addSegmentLengthConstraint(yarn.begin);
     addSegmentLengthConstraint(yarn.end - 2);
   }
-
-  // std::vector<int> pin = {
-    // 159, 171, 183, 195
-  // };
-
-  // for (int p : pin) {
-    // addPinConstraint(p, pointAt(Q, p));
-  // }
-
-  //addPinConstraint(0, pointAt(Q, 0));
-  //addPinConstraint(m - 1, pointAt(Q, m - 1));
 }
 
 }  // namespace simulator
